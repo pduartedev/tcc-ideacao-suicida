@@ -20,8 +20,22 @@ nltk.download("punkt_tab", quiet=True)
 nltk.download("stopwords", quiet=True)
 nltk.download("rslp", quiet=True)
 
+# ---------------------------------------------------------------------------
 # Stopwords em português
+# ---------------------------------------------------------------------------
 STOPWORDS_PT = set(stopwords.words("portuguese"))
+
+# Termos de negação que DEVEM ser preservados mesmo sendo stopwords.
+# No contexto de ideação suicida, essas palavras invertem a polaridade
+# do sentimento (ex: "não quero morrer" ≠ "quero morrer").
+# Referência: literatura de NLP aplicado à saúde mental.
+NEGACOES = {
+    "não", "nao", "nunca", "jamais", "nem", "nenhum", "nenhuma",
+    "nada", "tampouco", "sequer", "impossível", "impossivel"
+}
+
+# Remove as negações da lista de stopwords para que não sejam descartadas
+STOPWORDS_PT = STOPWORDS_PT - NEGACOES
 
 # Stemmer para português (RSLP — Removedor de Sufixos da Língua Portuguesa)
 stemmer = RSLPStemmer()
@@ -39,9 +53,9 @@ def limpar_texto(texto: str) -> str:
     texto = texto.lower()
     texto = re.sub(r"http\S+|www\S+", "", texto)          # Remove URLs
     texto = re.sub(r"@\w+|#\w+", "", texto)               # Remove menções/hashtags
-    texto = re.sub(r"[^\w\s]", "", texto)                  # Remove pontuação
-    texto = re.sub(r"\d+", "", texto)                      # Remove números
-    texto = re.sub(r"\s+", " ", texto).strip()             # Normaliza espaços
+    texto = re.sub(r"[^\w\s]", "", texto)                 # Remove pontuação
+    texto = re.sub(r"\d+", "", texto)                     # Remove números
+    texto = re.sub(r"\s+", " ", texto).strip()            # Normaliza espaços
     return texto
 
 
@@ -50,9 +64,26 @@ def tokenizar(texto: str) -> list[str]:
     return word_tokenize(texto, language="portuguese")
 
 
-def remover_stopwords(tokens: list[str]) -> list[str]:
-    """Remove stopwords em português."""
-    return [t for t in tokens if t not in STOPWORDS_PT and len(t) > 2]
+def remover_stopwords(tokens: list[str], preservar: set = NEGACOES) -> list[str]:
+    """
+    Remove stopwords em português, preservando termos de negação.
+
+    Termos como "não", "nunca" e "jamais" invertem a polaridade semântica
+    da frase e são críticos para a detecção de ideação suicida. Por isso,
+    são explicitamente mantidos mesmo que constem na lista de stopwords.
+
+    Parâmetros
+    ----------
+    tokens : list[str]
+        Lista de tokens a filtrar.
+    preservar : set
+        Conjunto de palavras a manter independentemente de serem stopwords.
+        Por padrão usa o conjunto NEGACOES definido neste módulo.
+    """
+    return [
+        t for t in tokens
+        if (t not in STOPWORDS_PT or t in preservar) and len(t) > 2
+    ]
 
 
 def aplicar_stemming(tokens: list[str]) -> list[str]:

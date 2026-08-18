@@ -1,9 +1,22 @@
-# Ambiente virtual
+# Ambientes virtuais
 venv/
+.venv/
 .env/
 env/
 
-# Python
+# Embeddings e arquivos grandes (acima de 100MB)
+data/embeddings/
+*.txt.gz
+*.zip
+*.tar.gz
+
+# Dados processados e splits binários
+data/processed/
+*.joblib
+*.pkl
+*.model
+
+# Python e caches
 __pycache__/
 *.py[cod]
 *.pyo
@@ -16,23 +29,16 @@ build/
 .ipynb_checkpoints/
 *.ipynb_checkpoints
 
-# Dados processados (não versionar dados pesados)
-data/processed/
+# Resultados gerados (figuras e métricas)
+results/metrics/*.joblib
+results/metrics/*.model
 
-# Resultados gerados
-results/
-
-# Modelos salvos
-*.pkl
-*.joblib
-*.model
-
-# IDEs
+# Configurações de IDEs
 .vscode/
 .idea/
 *.sublime-project
 *.sublime-workspace
 
-# Sistema
+# Sistema operacional
 .DS_Store
 Thumbs.db

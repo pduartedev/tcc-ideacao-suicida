@@ -1,23 +1,39 @@
 # TCC — Detecção de Ideação Suicida com Conjunto de Classificadores
 
 Projeto experimental do Trabalho de Conclusão de Curso (TCC) cujo objetivo é detectar
-ideação suicida em textos em português utilizando um ensemble de classificadores.
-
-## Classificadores
-
-- **Random Forest** (scikit-learn)
-- **AdaBoost** (scikit-learn)
-- **XGBoost** (xgboost)
-
-Otimização de hiperparâmetros via **GridSearchCV** (scikit-learn).
+ideação suicida em textos em português utilizando conjunto de classificadores.
 
 ## Pré-processamento
 
 Realizado com **NLTK**, incluindo:
+- Limpeza de dados.
 - Tokenização
 - Remoção de stopwords em português
 - Stemming (RSLPStemmer)
-- Vetorização via TF-IDF
+
+## Classificadores individuais
+
+- **Support Vector Machine** (scikit-learn)
+- **Naive Bayes** (scikit-learn)
+- **Decision Tree** (scikit-learn)
+
+## Ensembles
+
+- **Voting Classifier** (scikit-learn)
+- **Stacking Classifier** (scikit-learn)
+- **Random Forest** (scikit-learn)
+- **AdaBoost** (scikit-learn)
+- **Gradient Boosting** (scikit-learn)
+- **XGBoost** (xgboost)
+
+Otimização de hiperparâmetros via **GridSearchCV** (scikit-learn).
+
+# Vetorização
+
+- Bag of Words (BoW)
+- TF-IDF
+-Word2Vec 
+- GloVe 
 
 ## Estrutura
 
