@@ -1,22 +1,85 @@
 """
 models.py
 ---------
-Definição e treinamento dos classificadores do ensemble:
+Definição e treinamento dos classificadores do TCC:
+
+Classificadores Individuais:
+    - Naive Bayes (MultinomialNB para BoW/TF-IDF | GaussianNB para W2V/GloVe)
+    - Support Vector Machine (SVM)
+    - Decision Tree
+
+Ensembles:
     - Random Forest
     - AdaBoost
+    - Gradient Boosting
     - XGBoost
+    - Voting Classifier
+    - Stacking Classifier
 
 Inclui função para otimização de hiperparâmetros via GridSearchCV.
 """
 
 import joblib
-from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
+import numpy as np
+from scipy.sparse import issparse
+
+from sklearn.naive_bayes import MultinomialNB, GaussianNB
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import (
+    RandomForestClassifier,
+    AdaBoostClassifier,
+    GradientBoostingClassifier,
+    VotingClassifier,
+    StackingClassifier,
+)
+from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import GridSearchCV, StratifiedKFold
 from xgboost import XGBClassifier
 
 
 # ---------------------------------------------------------------------------
-# Definição dos modelos com hiperparâmetros padrão iniciais
+# Classificadores Individuais
+# ---------------------------------------------------------------------------
+
+def criar_naive_bayes(representacao: str = "bow"):
+    """
+    Retorna o Naive Bayes adequado para a representação textual:
+      - 'bow' ou 'tfidf' → MultinomialNB (exige valores ≥ 0)
+      - 'w2v' ou 'glove'  → GaussianNB  (aceita valores negativos)
+
+    Parâmetros
+    ----------
+    representacao : str
+        Uma das strings: 'bow', 'tfidf', 'w2v', 'glove'.
+    """
+    representacao = representacao.lower()
+    if representacao in ("bow", "tfidf"):
+        return MultinomialNB(alpha=1.0)
+    else:
+        return GaussianNB()
+
+
+def criar_svm(random_state: int = 42) -> SVC:
+    """Retorna um SVC com configuração base (kernel RBF)."""
+    return SVC(
+        C=1.0,
+        kernel="rbf",
+        probability=True,
+        random_state=random_state,
+    )
+
+
+def criar_decision_tree(random_state: int = 42) -> DecisionTreeClassifier:
+    """Retorna um DecisionTreeClassifier com configuração base."""
+    return DecisionTreeClassifier(
+        max_depth=None,
+        random_state=random_state,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Ensembles
 # ---------------------------------------------------------------------------
 
 def criar_random_forest(random_state: int = 42) -> RandomForestClassifier:
@@ -35,7 +98,16 @@ def criar_adaboost(random_state: int = 42) -> AdaBoostClassifier:
         n_estimators=100,
         learning_rate=1.0,
         random_state=random_state,
-        algorithm="SAMME",
+    )
+
+
+def criar_gradient_boosting(random_state: int = 42) -> GradientBoostingClassifier:
+    """Retorna um GradientBoostingClassifier com configuração base."""
+    return GradientBoostingClassifier(
+        n_estimators=100,
+        learning_rate=0.1,
+        max_depth=3,
+        random_state=random_state,
     )
 
 
@@ -45,16 +117,68 @@ def criar_xgboost(random_state: int = 42) -> XGBClassifier:
         n_estimators=100,
         max_depth=6,
         learning_rate=0.1,
-        use_label_encoder=False,
         eval_metric="logloss",
         random_state=random_state,
         n_jobs=-1,
     )
 
 
+def criar_voting_classifier(estimadores: list) -> VotingClassifier:
+    """
+    Retorna um VotingClassifier (soft voting) com os estimadores fornecidos.
+
+    Parâmetros
+    ----------
+    estimadores : list of (str, estimador)
+        Ex: [('svm', svc), ('rf', rf), ('xgb', xgb)]
+    """
+    return VotingClassifier(estimators=estimadores, voting="soft", n_jobs=-1)
+
+
+def criar_stacking_classifier(estimadores: list, meta_modelo=None) -> StackingClassifier:
+    """
+    Retorna um StackingClassifier com os estimadores e meta-modelo fornecidos.
+
+    Parâmetros
+    ----------
+    estimadores : list of (str, estimador)
+        Classificadores base (nível 0).
+    meta_modelo : estimador scikit-learn, opcional
+        Meta-classificador (nível 1). Padrão: LogisticRegression.
+    """
+    if meta_modelo is None:
+        meta_modelo = LogisticRegression(max_iter=1000)
+    return StackingClassifier(
+        estimators=estimadores,
+        final_estimator=meta_modelo,
+        cv=5,
+        n_jobs=-1,
+    )
+
+
 # ---------------------------------------------------------------------------
-# Grid de hiperparâmetros para GridSearchCV
+# Grids de hiperparâmetros para GridSearchCV
 # ---------------------------------------------------------------------------
+
+PARAMS_NAIVE_BAYES_MULTINOMIAL = {
+    "alpha": [0.01, 0.1, 0.5, 1.0, 2.0],
+}
+
+PARAMS_NAIVE_BAYES_GAUSSIAN = {
+    "var_smoothing": [1e-11, 1e-10, 1e-9, 1e-8, 1e-7],
+}
+
+PARAMS_SVM = {
+    "C": [0.1, 1, 10],
+    "kernel": ["linear", "rbf"],
+    "gamma": ["scale", "auto"],
+}
+
+PARAMS_DECISION_TREE = {
+    "max_depth": [None, 5, 10, 20],
+    "min_samples_split": [2, 5, 10],
+    "criterion": ["gini", "entropy"],
+}
 
 PARAMS_RANDOM_FOREST = {
     "n_estimators": [100, 200, 300],
@@ -68,6 +192,12 @@ PARAMS_ADABOOST = {
     "learning_rate": [0.5, 1.0, 1.5],
 }
 
+PARAMS_GRADIENT_BOOSTING = {
+    "n_estimators": [100, 200],
+    "learning_rate": [0.05, 0.1, 0.2],
+    "max_depth": [3, 5],
+}
+
 PARAMS_XGBOOST = {
     "n_estimators": [100, 200],
     "max_depth": [4, 6, 8],
@@ -77,8 +207,15 @@ PARAMS_XGBOOST = {
 
 
 # ---------------------------------------------------------------------------
-# GridSearchCV
+# Utilidades
 # ---------------------------------------------------------------------------
+
+def para_denso(X):
+    """Converte matriz esparsa para densa, se necessário (para GaussianNB)."""
+    if issparse(X):
+        return X.toarray()
+    return np.array(X)
+
 
 def otimizar_modelo(
     modelo,
@@ -120,7 +257,7 @@ def otimizar_modelo(
         verbose=verbose,
     )
     grid.fit(X_treino, y_treino)
-    print(f"\nMelhores parâmetros: {grid.best_params_}")
+    print(f"\nMelhores parâmetros : {grid.best_params_}")
     print(f"Melhor score ({scoring}): {grid.best_score_:.4f}")
     return grid
 

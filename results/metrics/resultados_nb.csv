@@ -1,0 +1,5 @@
+Modelo,Representação,Melhores Params,F1-Score (CV)
+Naive Bayes (MultinomialNB),BoW,{'alpha': 0.01},0.845
+Naive Bayes (MultinomialNB),TF-IDF,{'alpha': 0.1},0.8768
+Naive Bayes (GaussianNB),Word2Vec,{'var_smoothing': 1e-11},0.6912
+Naive Bayes (GaussianNB),GloVe,{'var_smoothing': 1e-11},0.7637

@@ -1,0 +1,13 @@
+Modelo,Representação,Melhores Params,F1-Score (CV)
+SVM,TF-IDF,"{'C': 10, 'gamma': 'scale', 'kernel': 'rbf'}",0.8933
+SVM,BoW,"{'C': 10, 'gamma': 'scale', 'kernel': 'rbf'}",0.8827
+Naive Bayes (MultinomialNB),TF-IDF,{'alpha': 0.1},0.8768
+SVM,GloVe,"{'C': 10, 'gamma': 'scale', 'kernel': 'rbf'}",0.849
+Naive Bayes (MultinomialNB),BoW,{'alpha': 0.01},0.845
+Decision Tree,TF-IDF,"{'criterion': 'gini', 'max_depth': None, 'min_samples_split': 2}",0.8421
+Decision Tree,BoW,"{'criterion': 'gini', 'max_depth': None, 'min_samples_split': 2}",0.8292
+Decision Tree,GloVe,"{'criterion': 'gini', 'max_depth': 10, 'min_samples_split': 5}",0.8056
+Decision Tree,Word2Vec,"{'criterion': 'gini', 'max_depth': None, 'min_samples_split': 2}",0.8044
+SVM,Word2Vec,"{'C': 10, 'gamma': 'scale', 'kernel': 'linear'}",0.794
+Naive Bayes (GaussianNB),GloVe,{'var_smoothing': 1e-11},0.7637
+Naive Bayes (GaussianNB),Word2Vec,{'var_smoothing': 1e-11},0.6912

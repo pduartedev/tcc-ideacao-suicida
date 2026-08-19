@@ -1,0 +1,5 @@
+Modelo,Representação,Melhores Params,F1-Score (CV)
+Decision Tree,BoW,"{'criterion': 'gini', 'max_depth': None, 'min_samples_split': 2}",0.8292
+Decision Tree,TF-IDF,"{'criterion': 'gini', 'max_depth': None, 'min_samples_split': 2}",0.8421
+Decision Tree,Word2Vec,"{'criterion': 'gini', 'max_depth': None, 'min_samples_split': 2}",0.8044
+Decision Tree,GloVe,"{'criterion': 'gini', 'max_depth': 10, 'min_samples_split': 5}",0.8056

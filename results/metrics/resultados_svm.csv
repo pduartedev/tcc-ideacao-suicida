@@ -1,0 +1,5 @@
+Modelo,Representação,Melhores Params,F1-Score (CV)
+SVM,BoW,"{'C': 10, 'gamma': 'scale', 'kernel': 'rbf'}",0.8827
+SVM,TF-IDF,"{'C': 10, 'gamma': 'scale', 'kernel': 'rbf'}",0.8933
+SVM,Word2Vec,"{'C': 10, 'gamma': 'scale', 'kernel': 'linear'}",0.794
+SVM,GloVe,"{'C': 10, 'gamma': 'scale', 'kernel': 'rbf'}",0.849

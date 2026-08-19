@@ -1,0 +1,5 @@
+Modelo,Representação,Melhores Params,F1-Score (CV)
+AdaBoost,BoW,"{'learning_rate': 1.5, 'n_estimators': 200}",0.8048
+AdaBoost,TF-IDF,"{'learning_rate': 1.5, 'n_estimators': 200}",0.834
+AdaBoost,Word2Vec,"{'learning_rate': 1.5, 'n_estimators': 200}",0.8265
+AdaBoost,GloVe,"{'learning_rate': 1.0, 'n_estimators': 200}",0.8021
