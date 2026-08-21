@@ -1,0 +1,10 @@
+Método,Combinação,F1-Score (CV),Std
+Voting Soft,SVM + NB + RF,0.9016,0.0184
+Stacking → LogReg,SVM + NB + RF,0.9006,0.0189
+Voting Soft,SVM + NB + RF + XGBoost,0.8994,0.0144
+Stacking → LogReg,SVM + NB + RF + XGBoost,0.8993,0.0184
+Stacking → LogReg,SVM + NB + RF + XGBoost + GB,0.8992,0.0171
+Voting Hard,SVM + NB + RF,0.8975,0.0138
+Voting Soft,SVM + NB + RF + XGBoost + GB,0.894,0.0153
+Voting Hard,SVM + NB + RF + XGBoost + GB,0.8886,0.0108
+Voting Hard,SVM + NB + RF + XGBoost,0.8863,0.012

@@ -1,0 +1,5 @@
+Modelo,Representação,Melhores Params,F1-Score (CV)
+XGBoost,BoW,"{'learning_rate': 0.2, 'max_depth': 8, 'n_estimators': 200, 'subsample': 1.0}",0.8492
+XGBoost,TF-IDF,"{'learning_rate': 0.2, 'max_depth': 8, 'n_estimators': 200, 'subsample': 1.0}",0.8668
+XGBoost,Word2Vec,"{'learning_rate': 0.2, 'max_depth': 4, 'n_estimators': 100, 'subsample': 1.0}",0.8625
+XGBoost,GloVe,"{'learning_rate': 0.1, 'max_depth': 8, 'n_estimators': 200, 'subsample': 0.8}",0.8446

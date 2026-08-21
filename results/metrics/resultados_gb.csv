@@ -1,0 +1,5 @@
+Modelo,Representação,Melhores Params,F1-Score (CV)
+Gradient Boosting,BoW,"{'learning_rate': 0.2, 'max_depth': 5, 'n_estimators': 200}",0.8509
+Gradient Boosting,TF-IDF,"{'learning_rate': 0.2, 'max_depth': 5, 'n_estimators': 200}",0.8657
+Gradient Boosting,Word2Vec,"{'learning_rate': 0.2, 'max_depth': 5, 'n_estimators': 200}",0.8561
+Gradient Boosting,GloVe,"{'learning_rate': 0.2, 'max_depth': 5, 'n_estimators': 200}",0.8478
